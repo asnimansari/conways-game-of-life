@@ -1,8 +1,8 @@
 import {memory} from "convoy-game-of-life/convoy_game_of_life_bg";
-import {Universe, Cell} from "convoy-game-of-life";
+import {Universe,} from "convoy-game-of-life";
 
 
-const CELL_SIZE = 5;
+const CELL_SIZE = 2;
 const GRID_COLOR = "#CCCCCC";
 const DEAD_COLOR = "#FFFFFF";
 const ALIVE_COLOR = "#000000";
@@ -56,14 +56,34 @@ const drawCells = () => {
 
     ctx.beginPath();
 
+
+    ctx.fillStyle = ALIVE_COLOR;
     for (let row = 0; row < height; row++) {
         for (let col = 0; col < width; col++) {
             const idx = getIndex(row, col);
 
-            // This is updated!
-            ctx.fillStyle = bitIsSet(idx, cells)
-                ? ALIVE_COLOR
-                : DEAD_COLOR;
+
+            if (!bitIsSet(idx, cells)) {
+                continue
+            }
+
+            ctx.fillRect(
+                col * (CELL_SIZE + 1) + 1,
+                row * (CELL_SIZE + 1) + 1,
+                CELL_SIZE,
+                CELL_SIZE
+            );
+        }
+    }
+    ctx.fillStyle = DEAD_COLOR;
+    for (let row = 0; row < height; row++) {
+        for (let col = 0; col < width; col++) {
+            const idx = getIndex(row, col);
+
+
+            if (bitIsSet(idx, cells)) {
+                continue
+            }
 
             ctx.fillRect(
                 col * (CELL_SIZE + 1) + 1,
@@ -78,7 +98,10 @@ const drawCells = () => {
 };
 const renderLoop = () => {
     fps.render();
-    universe.tick();
+    for (let i = 0; i < 9; i++) {
+
+        universe.tick();
+    }
     drawGrid();
     drawCells();
     animationId = requestAnimationFrame(renderLoop);
