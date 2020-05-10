@@ -67,7 +67,7 @@ impl Universe {
                     (Cell::Alive, x) if x < 2 => Cell::Dead,
                     // Rule 2: Any live cell with two or three live neighbours
                     // lives on to the next generation.
-                    (Cell::Alive, 2) | (Cell::Alive, 3) => Cell::Alive, 
+                    (Cell::Alive, 2) | (Cell::Alive, 3) => Cell::Alive,
                     // Rule 3: Any live cell with more than three live
                     // neighbours dies, as if by overpopulation.
                     (Cell::Alive, x) if x > 3 => Cell::Dead,
@@ -105,6 +105,16 @@ impl Universe {
 
     pub fn render(&self) -> String {
         self.to_string()
+    }
+
+    pub fn width(&self) -> u32 {
+        self.width
+    }
+    pub fn height(&self) -> u32 {
+        self.height
+    }
+    pub fn cells(&self) -> *const Cell {
+        self.cells.as_ptr()
     }
 }
 
