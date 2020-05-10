@@ -68,8 +68,10 @@ impl Universe {
     }
 
     pub fn tick(&mut self) {
-        let _timer = Timer::new("Universe::tick");
         let mut next = self.cells.clone();
+
+
+        // let mut next = self.cells.clone();
         for row in 0..self.height {
             for column in 0..self.width {
                 let idx = self.get_index(row, column);
@@ -95,6 +97,7 @@ impl Universe {
                 });
             }
         }
+        // let _timer = Timer::new("free old cells");
         self.cells = next;
     }
 
