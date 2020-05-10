@@ -139,6 +139,10 @@ impl Universe {
         self.height = height;
         (0..self.width * height).for_each(|i| self.cells.set(i as usize, false));
     }
+    pub fn toggle_cell(&mut self, row: u32, column: u32) {
+        let idx = self.get_index(row, column);
+        self.cells.set(idx, !self.cells[idx]);
+    }
 }
 
 impl Universe {
