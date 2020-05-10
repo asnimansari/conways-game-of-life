@@ -7,6 +7,7 @@ use fixedbitset::FixedBitSet;
 use wasm_bindgen::prelude::*;
 use std::fmt;
 use wasm_bindgen::__rt::core::fmt::{Formatter, Error};
+use web_sys::console;
 
 // When the `wee_alloc` feature is enabled, use `wee_alloc` as the global
 // allocator.
@@ -67,6 +68,7 @@ impl Universe {
     }
 
     pub fn tick(&mut self) {
+        let _timer = Timer::new("Universe::tick");
         let mut next = self.cells.clone();
         for row in 0..self.height {
             for column in 0..self.width {
@@ -99,8 +101,8 @@ impl Universe {
     pub fn new() -> Self {
         utils::set_panic_hook();
 
-        let width = 64;
-        let height = 64;
+        let width = 128;
+        let height = 128;
 
         let size = (width * height) as usize;
         let mut cells = FixedBitSet::with_capacity(size);
@@ -161,3 +163,20 @@ impl Universe {
     }
 }
 
+
+pub struct Timer<'a> {
+    name: &'a str,
+}
+
+impl<'a> Timer<'a> {
+    pub fn new(name: &'a str) -> Timer<'a> {
+        console::time_with_label(name);
+        Timer { name }
+    }
+}
+
+impl<'a> Drop for Timer<'a> {
+    fn drop(&mut self) {
+        console::time_end_with_label(self.name);
+    }
+}
