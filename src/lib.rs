@@ -72,11 +72,9 @@ impl Universe {
                     (false, 3) => true,
                     (otherwise, _) => otherwise
                 });
-
             }
         }
         self.cells = next;
-
     }
 
     pub fn new() -> Self {
@@ -111,18 +109,30 @@ impl Universe {
     pub fn cells(&self) -> *const u32 {
         self.cells.as_slice().as_ptr()
     }
+
+    pub fn set_width(&mut self, width: u32) {
+        self.width = width;
+        (0..width * self.height).for_each(|i| self.cells.set(i as usize, false));
+    }
+    pub fn set_height(&mut self, height: u32) {
+        self.height = height;
+        (0..self.width * height).for_each(|i| self.cells.set(i as usize, false));
+    }
 }
 
-// impl fmt::Display for Universe {
-//     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
-//         for line in self.cells.as_slice().chunks(self.width as usize) {
-//             for &cell in line {
-//                 let symbol = if cell == Cell::Dead { '◻' } else { '◼' };
-//                 write!(f, "{}", symbol)?;
-//             }
-//             write!(f, "\n")?;
-//         }
-//
-//         Ok(())
-//     }
-// }
+impl Universe {
+    /// Get the dead and alive values of the entire universe.
+    pub fn get_cells(&self) -> &FixedBitSet {
+        &self.cells
+    }
+
+    /// Set cells to be alive in a universe by passing the row and column
+    /// of each cell as an array.
+    pub fn set_cells(&mut self, cells: &[(u32, u32)]) {
+
+        for (row, col) in cells.iter().cloned() {
+            let idx = self.get_index(row, col);
+            self.cells.set(idx, true);
+        }
+    }
+}
