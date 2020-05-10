@@ -34,6 +34,16 @@ pub struct Universe {
     cells: FixedBitSet,
 }
 
+extern crate web_sys;
+
+// A macro to provide `println!(..)`-style syntax for `console.log` logging.
+macro_rules! log {
+    ( $( $t:tt )* ) => {
+        web_sys::console::log_1(&format!( $( $t )* ).into());
+    }
+}
+
+
 #[wasm_bindgen]
 impl Universe {
     fn get_index(&self, row: u32, column: u32) -> usize {
@@ -64,6 +74,15 @@ impl Universe {
                 let cell = self.cells[idx];
 
                 let live_neighbours = self.get_live_neighbour_count(row, column);
+                //
+                // log!(
+                //     "cell[{}, {}] is initially {:?} and has {} live neighbors",
+                //     row,
+                //     column,
+                //     cell,
+                //     live_neighbours
+                // );
+
 
                 next.set(idx, match (cell, live_neighbours) {
                     (true, x) if x < 2 => false,
@@ -78,6 +97,8 @@ impl Universe {
     }
 
     pub fn new() -> Self {
+        utils::set_panic_hook();
+
         let width = 64;
         let height = 64;
 
@@ -129,10 +150,10 @@ impl Universe {
     /// Set cells to be alive in a universe by passing the row and column
     /// of each cell as an array.
     pub fn set_cells(&mut self, cells: &[(u32, u32)]) {
-
         for (row, col) in cells.iter().cloned() {
             let idx = self.get_index(row, col);
             self.cells.set(idx, true);
         }
     }
 }
+
